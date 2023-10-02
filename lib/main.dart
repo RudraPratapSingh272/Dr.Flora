@@ -115,8 +115,8 @@ class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
             ElevatedButton(
               onPressed: _getImage,
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green,
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -133,8 +133,8 @@ class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
                   ? _classifyImage
                   : null, // Disable when no image is selected
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green,
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
