@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
-import 'result_page.dart'; // Import the ResultPage class
 
 void main() {
   runApp(MyApp());
@@ -30,6 +30,9 @@ class PlantDiseaseDetection extends StatefulWidget {
 class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
   File? _selectedImage;
   String? _errorMessage; // Store error message
+  String? _predictedClass;
+  double? _probability;
+  String? _solution;
 
   Future<void> _getImage() async {
     final pickedFile =
@@ -42,35 +45,49 @@ class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
     });
   }
 
-  void _classifyImage() {
+  Future<void> _classifyImage() async {
     if (_selectedImage == null) {
       setState(() {
-        _errorMessage = "Select an image first"; // Set error message
+        _errorMessage = "Select an image first";
       });
-      return; // Don't proceed with classification if no image is selected
+      return;
     }
 
-    // Add your image classification logic here
-    // You would typically send the selected image to a server for classification
-    // Once you receive the classification result, you can display it to the user
-    // ...
+    final serverUrl = 'http://your_flask_server_url/upload';
 
-    // For demonstration purposes, simulate prediction data (replace with actual prediction code)
-    String predictedClass = "Some Class";
-    double probability = 0.85;
-    String solution = "Some Solution";
+    try {
+      final response = await http.post(
+        Uri.parse(serverUrl),
+        body: {'image': _selectedImage!.readAsBytesSync()},
+      );
 
-    // Navigate to ResultPage and pass prediction data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultPage(
-          predictedClass: predictedClass,
-          probability: probability,
-          solution: solution,
-        ),
-      ),
-    );
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        _predictedClass = jsonResponse['predicted_class'];
+        _probability = double.parse(jsonResponse['probability']);
+        _solution = jsonResponse['solution'];
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultPage(
+              predictedClass: _predictedClass!,
+              probability: _probability!,
+              solution: _solution!,
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage = "Server error. Please try again later.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage =
+            "Error sending image to server. Please check your internet connection.";
+      });
+    }
   }
 
   @override
@@ -128,6 +145,53 @@ class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
                 style: TextStyle(fontSize: 18.0),
               ),
             ),
+            if (_errorMessage != null)
+              SizedBox(
+                height: 20.0,
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  sendImageToServer(File file, String serverUrl) {}
+}
+
+class ResultPage extends StatelessWidget {
+  final String predictedClass;
+  final double probability;
+  final String solution;
+
+  ResultPage({
+    required this.predictedClass,
+    required this.probability,
+    required this.solution,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Result'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Prediction Result:',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10.0),
+            Text('Class: $predictedClass'),
+            Text('Probability: ${probability.toStringAsFixed(2)}%'),
+            Text('Solution: $solution'),
           ],
         ),
       ),

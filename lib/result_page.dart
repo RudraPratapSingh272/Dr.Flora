@@ -5,10 +5,11 @@ class ResultPage extends StatelessWidget {
   final double probability;
   final String solution;
 
-  ResultPage(
-      {required this.predictedClass,
-      required this.probability,
-      required this.solution});
+  ResultPage({
+    required this.predictedClass,
+    required this.probability,
+    required this.solution,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +20,11 @@ class ResultPage extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            width: MediaQuery.of(context).size.width *
-                0.8, // Set the container width as a percentage of the screen width
+            width: MediaQuery.of(context).size.width * 0.8,
             padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.green, // Background color
-              borderRadius: BorderRadius.circular(10.0), // Add rounded corners
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class ResultPage extends StatelessWidget {
                   'Predicted Class: $predictedClass',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white, // Text color
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: 16),
@@ -42,7 +42,7 @@ class ResultPage extends StatelessWidget {
                   'Probability: ${probability.toStringAsFixed(2)}%',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white, // Text color
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: 16),
@@ -50,7 +50,7 @@ class ResultPage extends StatelessWidget {
                   'Solution: $solution',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white, // Text color
+                    color: Colors.white,
                   ),
                 ),
               ],
