@@ -53,7 +53,7 @@ class _PlantDiseaseDetectionState extends State<PlantDiseaseDetection> {
       return;
     }
 
-    final serverUrl = 'http://your_flask_server_url/upload';
+    final serverUrl = 'https://8b9c-103-227-94-102.ngrok.io/upload';
 
     try {
       final response = await http.post(
